@@ -61,8 +61,6 @@ class MainLayout extends JFrame{
 class DrawLine extends JPanel {
 	JLabel l_lb_x1, l_lb_x2, l_lb_y1, l_lb_y2;
 	JTextField l_cb_x1,l_cb_x2,l_cb_y1,l_cb_y2;
-	JLabel l_cb_xaxis[], l_cb_yaxis[];
-	JTextField l_cb_xmin,l_cb_xmax,l_cb_ymin,l_cb_ymax;
 	JRadioButton l_rd_bre, l_rd_dda, l_rd_mp;
 	ButtonGroup l_bg_mode;
 	JButton l_bt_draw;
@@ -76,21 +74,11 @@ class DrawLine extends JPanel {
 		l_lb_x2 = new JLabel("结束位置横坐标");
 		l_lb_y1 = new JLabel("起始位置纵坐标");
 		l_lb_y2 = new JLabel("结束位置纵坐标");
-		l_cb_xaxis = new JLabel[5];
-		l_cb_yaxis = new JLabel[5];
 		l_cb_x1 = new JTextField();
 		l_cb_x2 = new JTextField();
 		l_cb_y1 = new JTextField();
 		l_cb_y2 = new JTextField();
-		l_cb_xmin = new JTextField();
-		l_cb_xmax = new JTextField();
-		l_cb_ymin = new JTextField();
-		l_cb_ymax = new JTextField();
 		l_pn_main = new DrawPanel();
-		for(int i=0; i<5; i++) {
-			l_cb_xaxis[i] = new JLabel();
-			l_cb_yaxis[i] = new JLabel();
-		}
 		l_bt_draw = new JButton("绘制");
 		l_rd_bre = new JRadioButton("Bresham");
 		l_rd_dda = new JRadioButton("DDA");
@@ -107,27 +95,11 @@ class DrawLine extends JPanel {
 		add(l_cb_x2);
 		add(l_cb_y1);
 		add(l_cb_y2);
-		add(l_cb_xmin);
-		add(l_cb_xmax);
-		add(l_cb_ymin);
-		add(l_cb_ymax);
 		add(l_rd_bre);
 		add(l_rd_dda);
 		add(l_rd_mp);
 		add(l_pn_main);
-		for(int i=0;i<5;i++) {
-			add(l_cb_xaxis[i]);
-			add(l_cb_yaxis[i]);
-		}
 		add(l_bt_draw);
-		l_cb_xmin.setHorizontalAlignment(SwingConstants.CENTER);
-		l_cb_xmax.setHorizontalAlignment(SwingConstants.CENTER);
-		l_cb_ymin.setHorizontalAlignment(SwingConstants.CENTER);
-		l_cb_ymax.setHorizontalAlignment(SwingConstants.CENTER);
-		l_cb_xmin.setFont(new Font("Arial", Font.PLAIN, 12));
-		l_cb_xmax.setFont(new Font("Arial", Font.PLAIN, 12));
-		l_cb_ymin.setFont(new Font("Arial", Font.PLAIN, 12));
-		l_cb_ymax.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_rd_dda.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_rd_bre.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_rd_mp.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -135,13 +107,6 @@ class DrawLine extends JPanel {
 		l_cb_x2.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_cb_y1.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_cb_y2.setFont(new Font("Arial", Font.PLAIN, 12));
-		l_cb_xmin.setText("0");
-		l_cb_xmax.setText("24");
-		l_cb_ymin.setText("0");
-		l_cb_ymax.setText("24");
-		l_cb_xmax.setEditable(false);
-		l_cb_ymax.setEditable(false);
-		setaxis();
 		l_pn_main.setBackground(java.awt.Color.WHITE);
 		l_lb_x1.setBounds(50,10,100,20);
 		l_lb_x2.setBounds(200,10,100,20);
@@ -152,30 +117,10 @@ class DrawLine extends JPanel {
 		l_cb_y1.setBounds(140,35,50,20);
 		l_cb_y2.setBounds(290,35,50,20);
 		l_bt_draw.setBounds(460,15,80,35);
-		l_cb_xmin.setBounds(40,545,40,20);
-		l_cb_xmax.setBounds(520,545,40,20);
-		l_cb_ymin.setBounds(550,520,40,20);
-		l_cb_ymax.setBounds(550,50,40,20);
 		l_rd_dda.setBounds(360,0,100,20);
 		l_rd_bre.setBounds(360,20,100,20);
 		l_rd_mp.setBounds(360,40,100,20);
-		l_pn_main.setBounds(60,60,481,481);
-		for(int i=0;i<5;i++) {
-			l_cb_xaxis[i].setBounds(80*i+135,545,40,20);
-			l_cb_yaxis[i].setBounds(550,450-80*i,40,20);
-			l_cb_xaxis[i].setFont(new Font("Arial", Font.PLAIN, 12));
-			l_cb_yaxis[i].setFont(new Font("Arial", Font.PLAIN, 12));
-		}
-		l_cb_xmin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setaxis();
-			}
-		});
-		l_cb_ymin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setaxis();
-			}
-		});
+		l_pn_main.setBounds(40,60,540,540);
 		l_bt_draw.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Msgbox msg;
@@ -191,16 +136,16 @@ class DrawLine extends JPanel {
 				else if(l_cb_y2.getText().equals("")) {
 					msg = new Msgbox("请输入起始点与终点坐标！");
 				}
-				else if(l_cb_xmin.getText().equals("")) {
+				else if(l_pn_main.l_cb_xmin.getText().equals("")) {
 					msg = new Msgbox("请设置坐标系显示范围！");
 				}
-				else if(l_cb_xmax.getText().equals("")) {
+				else if(l_pn_main.l_cb_xmax.getText().equals("")) {
 					msg = new Msgbox("请设置坐标系显示范围！");
 				}
-				else if(l_cb_ymin.getText().equals("")) {
+				else if(l_pn_main.l_cb_ymin.getText().equals("")) {
 					msg = new Msgbox("请设置坐标系显示范围！");
 				}
-				else if(l_cb_ymax.getText().equals("")) {
+				else if(l_pn_main.l_cb_ymax.getText().equals("")) {
 					msg = new Msgbox("请设置坐标系显示范围！");
 				}
 				else {
@@ -209,8 +154,8 @@ class DrawLine extends JPanel {
 							l_pn_main.d_lb_point[i][j].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointw.png"));
 						}
 					}
-					int xmin = Integer.valueOf(l_cb_xmin.getText());
-					int ymin = Integer.valueOf(l_cb_ymin.getText());
+					int xmin = Integer.valueOf(l_pn_main.l_cb_xmin.getText());
+					int ymin = Integer.valueOf(l_pn_main.l_cb_ymin.getText());
 					int x1 = Integer.valueOf(l_cb_x1.getText())-xmin;
 					int x2 = Integer.valueOf(l_cb_x2.getText())-xmin;
 					int y1 = Integer.valueOf(l_cb_y1.getText())-ymin;
@@ -468,16 +413,6 @@ class DrawLine extends JPanel {
 			}
 		});
 	}
-	void setaxis(){
-		l_cb_xmax.setText(String.valueOf(Integer.valueOf(l_cb_xmin.getText())+24));
-		l_cb_ymax.setText(String.valueOf(Integer.valueOf(l_cb_ymin.getText())+24));
-		int xmin = Integer.valueOf(l_cb_xmin.getText());
-		int ymin = Integer.valueOf(l_cb_ymin.getText());
-		for(int i=0; i<5; i++) {
-			l_cb_xaxis[i].setText(String.valueOf(xmin+i*4+4));
-			l_cb_yaxis[i].setText(String.valueOf(ymin+i*4+4));
-		}
-	}
 }
 
 class DrawCircle extends JPanel{
@@ -487,14 +422,26 @@ class DrawCircle extends JPanel{
 
 class DrawPanel extends JPanel{
 	JLabel d_lb_gridh[], d_lb_gridv[], d_lb_point[][];
+	JLabel l_cb_xaxis[], l_cb_yaxis[];
+	JTextField l_cb_xmin,l_cb_xmax,l_cb_ymin,l_cb_ymax;
 	public DrawPanel(){
 		String lookAndFeel ="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 		try { UIManager.setLookAndFeel(lookAndFeel); }
 		catch(Exception e) {}
 		setLayout(null);
+		l_cb_xmin = new JTextField();
+		l_cb_xmax = new JTextField();
+		l_cb_ymin = new JTextField();
+		l_cb_ymax = new JTextField();
+		l_cb_xaxis = new JLabel[5];
+		l_cb_yaxis = new JLabel[5];
 		d_lb_gridh = new JLabel[25];
 		d_lb_gridv = new JLabel[25];
 		d_lb_point = new JLabel[25][25];
+		for(int i=0; i<5; i++) {
+			l_cb_xaxis[i] = new JLabel();
+			l_cb_yaxis[i] = new JLabel();
+		}
 		for(int i=0; i<25; i++) {
 			for(int j=0; j<25;j++) {
 				d_lb_point[i][j] = new JLabel();
@@ -512,6 +459,59 @@ class DrawPanel extends JPanel{
 			d_lb_gridv[i].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/thicklinev.png"));
 			add(d_lb_gridv[i]);
 			d_lb_gridv[i].setBounds(i*20,0,1,481);
+		}
+		add(l_cb_xmin);
+		add(l_cb_xmax);
+		add(l_cb_ymin);
+		add(l_cb_ymax);
+		for(int i=0;i<5;i++) {
+			add(l_cb_xaxis[i]);
+			add(l_cb_yaxis[i]);
+		}
+		l_cb_xmin.setHorizontalAlignment(SwingConstants.CENTER);
+		l_cb_xmax.setHorizontalAlignment(SwingConstants.CENTER);
+		l_cb_ymin.setHorizontalAlignment(SwingConstants.CENTER);
+		l_cb_ymax.setHorizontalAlignment(SwingConstants.CENTER);
+		l_cb_xmin.setFont(new Font("Arial", Font.PLAIN, 12));
+		l_cb_xmax.setFont(new Font("Arial", Font.PLAIN, 12));
+		l_cb_ymin.setFont(new Font("Arial", Font.PLAIN, 12));
+		l_cb_ymax.setFont(new Font("Arial", Font.PLAIN, 12));
+		l_cb_xmin.setText("0");
+		l_cb_xmax.setText("24");
+		l_cb_ymin.setText("0");
+		l_cb_ymax.setText("24");
+		l_cb_xmax.setEditable(false);
+		l_cb_ymax.setEditable(false);
+		setaxis();
+		l_cb_xmin.setBounds(0,490,40,20);
+		l_cb_xmax.setBounds(460,490,40,20);
+		l_cb_ymin.setBounds(495,465,40,20);
+		l_cb_ymax.setBounds(495,0,40,20);
+		for(int i=0;i<5;i++) {
+			l_cb_xaxis[i].setBounds(80*i+75,490,40,20);
+			l_cb_yaxis[i].setBounds(495,390-80*i,40,20);
+			l_cb_xaxis[i].setFont(new Font("Arial", Font.PLAIN, 12));
+			l_cb_yaxis[i].setFont(new Font("Arial", Font.PLAIN, 12));
+		}
+		l_cb_xmin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setaxis();
+			}
+		});
+		l_cb_ymin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setaxis();
+			}
+		});
+	}
+	void setaxis(){
+		l_cb_xmax.setText(String.valueOf(Integer.valueOf(l_cb_xmin.getText())+24));
+		l_cb_ymax.setText(String.valueOf(Integer.valueOf(l_cb_ymin.getText())+24));
+		int xmin = Integer.valueOf(l_cb_xmin.getText());
+		int ymin = Integer.valueOf(l_cb_ymin.getText());
+		for(int i=0; i<5; i++) {
+			l_cb_xaxis[i].setText(String.valueOf(xmin+i*4+4));
+			l_cb_yaxis[i].setText(String.valueOf(ymin+i*4+4));
 		}
 	}
 	void paint(int x, int y, String text){
