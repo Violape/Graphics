@@ -480,6 +480,11 @@ class DrawLine extends JPanel {
 	}
 }
 
+class DrawCircle extends JPanel{
+	JLabel c_lb_cx, c_lb_cy, c_lb_r;
+	JTextField c_tf_cx, c_tf_cy, c_tf_r;
+}
+
 class DrawPanel extends JPanel{
 	JLabel d_lb_gridh[], d_lb_gridv[], d_lb_point[][];
 	public DrawPanel(){
