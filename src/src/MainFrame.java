@@ -19,6 +19,7 @@ class MainLayout extends JFrame{
 	JButton w_bt_DrawPolygen;
 	JButton w_bt_DrawFill;
 	DrawLine w_pn_DrawLine;
+	DrawCircle w_pn_DrawCircle;
 	public MainLayout() {
 		String lookAndFeel ="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 		try { UIManager.setLookAndFeel(lookAndFeel); }
@@ -29,30 +30,40 @@ class MainLayout extends JFrame{
 		w_bt_DrawPolygen = new JButton("»æÖÆ¶à±ßÐÎ");
 		w_bt_DrawFill = new JButton("ÇøÓòÌî³ä");
 		w_pn_DrawLine = new DrawLine();
+		w_pn_DrawCircle = new DrawCircle();
 		add(w_bt_DrawLine);
 		add(w_bt_DrawCircle);
 		add(w_bt_DrawPolygen);
 		add(w_bt_DrawFill);
 		add(w_pn_DrawLine);
+		add(w_pn_DrawCircle);
 		w_bt_DrawLine.setBounds(30,100,120,50);
 		w_bt_DrawCircle.setBounds(30,200,120,50);
 		w_bt_DrawPolygen.setBounds(30,300,120,50);
 		w_bt_DrawFill.setBounds(30,400,120,50);
 		w_pn_DrawLine.setBounds(180,0,600,600);
+		w_pn_DrawCircle.setBounds(180,0,600,600);
 		w_bt_DrawLine.setFont(new Font("Ó×Ô²",Font.BOLD, 16));
 		w_bt_DrawCircle.setFont(new Font("Ó×Ô²",Font.BOLD, 16));
 		w_bt_DrawPolygen.setFont(new Font("Ó×Ô²",Font.BOLD, 16));
 		w_bt_DrawFill.setFont(new Font("Ó×Ô²",Font.BOLD, 16));
-		w_bt_DrawCircle.setEnabled(false);
 		w_bt_DrawPolygen.setEnabled(false);
 		w_bt_DrawFill.setEnabled(false);
 		setVisible(true);
 		w_pn_DrawLine.setVisible(false);
+		w_pn_DrawCircle.setVisible(false);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		w_bt_DrawLine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					w_pn_DrawLine.setVisible(true);
+					w_pn_DrawCircle.setVisible(false);
+				}
+			});
+		w_bt_DrawCircle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					w_pn_DrawCircle.setVisible(true);
+					w_pn_DrawLine.setVisible(false);
 				}
 			});
 	}
@@ -107,7 +118,6 @@ class DrawLine extends JPanel {
 		l_cb_x2.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_cb_y1.setFont(new Font("Arial", Font.PLAIN, 12));
 		l_cb_y2.setFont(new Font("Arial", Font.PLAIN, 12));
-		l_pn_main.setBackground(java.awt.Color.WHITE);
 		l_lb_x1.setBounds(50,10,100,20);
 		l_lb_x2.setBounds(200,10,100,20);
 		l_lb_y1.setBounds(50,35,100,20);
@@ -416,8 +426,72 @@ class DrawLine extends JPanel {
 }
 
 class DrawCircle extends JPanel{
-	JLabel c_lb_cx, c_lb_cy, c_lb_r;
-	JTextField c_tf_cx, c_tf_cy, c_tf_r;
+	JLabel c_lb_cx, c_lb_cy, c_lb_rx, c_lb_ry;
+	JTextField c_tf_cx, c_tf_cy, c_tf_rx, c_tf_ry;
+	JRadioButton c_rd_tc, c_rd_to, c_rd_mp, c_rd_br;
+	ButtonGroup c_bg_shap, c_bg_mode;
+	JButton c_bt_draw;
+	DrawPanel c_pn_main;
+	public DrawCircle() {
+		String lookAndFeel ="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+		try { UIManager.setLookAndFeel(lookAndFeel); }
+		catch(Exception e) {}
+		setLayout(null);
+		c_lb_cx = new JLabel("Ô²ÐÄºá×ø±ê");
+		c_lb_cy = new JLabel("Ô²ÐÄ×Ý×ø±ê");
+		c_lb_rx = new JLabel("xÖá·½Ïò°ë¾¶");
+		c_lb_ry = new JLabel("yÖá·½Ïò°ë¾¶");
+		c_tf_cx = new JTextField();
+		c_tf_cy = new JTextField();
+		c_tf_rx = new JTextField();
+		c_tf_ry = new JTextField();
+		c_pn_main = new DrawPanel();
+		c_bt_draw = new JButton("»æÖÆ");
+		c_rd_tc = new JRadioButton("ÕýÔ²");
+		c_rd_to = new JRadioButton("ÍÖÔ²");
+		c_rd_mp = new JRadioButton("Midpoint");
+		c_rd_br = new JRadioButton("Bresham");
+		c_bg_shap = new ButtonGroup();
+		c_bg_shap.add(c_rd_tc);
+		c_bg_shap.add(c_rd_to);
+		c_bg_mode = new ButtonGroup();
+		c_bg_mode.add(c_rd_mp);
+		c_bg_mode.add(c_rd_br);
+		add(c_lb_cx);
+		add(c_lb_cy);
+		add(c_lb_rx);
+		add(c_lb_ry);
+		add(c_tf_cx);
+		add(c_tf_cy);
+		add(c_tf_rx);
+		add(c_tf_ry);
+		add(c_rd_tc);
+		add(c_rd_to);
+		add(c_rd_mp);
+		add(c_rd_br);
+		add(c_bt_draw);
+		add(c_pn_main);
+		c_rd_mp.setFont(new Font("Arial", Font.PLAIN, 12));
+		c_rd_br.setFont(new Font("Arial", Font.PLAIN, 12));
+		c_tf_cx.setFont(new Font("Arial", Font.PLAIN, 12));
+		c_tf_cy.setFont(new Font("Arial", Font.PLAIN, 12));
+		c_tf_rx.setFont(new Font("Arial", Font.PLAIN, 12));
+		c_tf_ry.setFont(new Font("Arial", Font.PLAIN, 12));
+		c_lb_cx.setBounds(50,10,100,20);
+		c_lb_cy.setBounds(190,10,100,20);
+		c_lb_rx.setBounds(50,35,100,20);
+		c_lb_ry.setBounds(190,35,100,20);
+		c_tf_cx.setBounds(120,10,50,20);
+		c_tf_cy.setBounds(260,10,50,20);
+		c_tf_rx.setBounds(120,35,50,20);
+		c_tf_ry.setBounds(260,35,50,20);
+		c_bt_draw.setBounds(460,15,80,35);
+		c_rd_tc.setBounds(320,10,50,20);
+		c_rd_to.setBounds(320,32,50,20);
+		c_rd_mp.setBounds(370,10,80,20);
+		c_rd_br.setBounds(370,32,80,20);
+		c_pn_main.setBounds(40,60,540,540);
+	}
 }
 
 class DrawPanel extends JPanel{
