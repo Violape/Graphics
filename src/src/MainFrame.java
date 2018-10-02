@@ -552,7 +552,30 @@ class DrawCircle extends JPanel{
 							return;
 						}
 						if(c_rd_mp.isSelected()) {
-							; //圆的中点画线算法
+							int x = 0, y = r, d = 1 - r;
+							String text = "Order "+String.valueOf(x)+", d = "+String.valueOf(d);
+							c_pn_main.paint(cx+x, 24-cy-y, text);
+							c_pn_main.paint(cx+x, 24-cy+y, text);
+							c_pn_main.paint(cx+y, 24-cy-x, text);
+							c_pn_main.paint(cx-y, 24-cy-x, text);
+							while(x <= y) {
+								if(d < 0) 
+									d += 2 * x + 3;
+								else {
+									d += 2 * (x - y) + 5;
+									y--;
+								}
+								x++;
+								text = "Order "+String.valueOf(x)+", d = "+String.valueOf(d);
+								c_pn_main.paint(cx+x, 24-cy-y, text);
+								c_pn_main.paint(cx+x, 24-cy+y, text);
+								c_pn_main.paint(cx-x, 24-cy-y, text);
+								c_pn_main.paint(cx-x, 24-cy+y, text);
+								c_pn_main.paint(cx+y, 24-cy-x, text);
+								c_pn_main.paint(cx+y, 24-cy+x, text);
+								c_pn_main.paint(cx-y, 24-cy-x, text);
+								c_pn_main.paint(cx-y, 24-cy+x, text);
+							}
 						}
 						else if(c_rd_br.isSelected()) {
 							; //圆的Bresham算法
