@@ -540,9 +540,9 @@ class DrawCircle extends JPanel{
 					int xmin = Integer.valueOf(c_pn_main.l_cb_xmin.getText());
 					int ymin = Integer.valueOf(c_pn_main.l_cb_ymin.getText());
 					int cx = Integer.valueOf(c_tf_cx.getText())-xmin;
-					int cy = Integer.valueOf(c_tf_cy.getText())-xmin;
+					int cy = Integer.valueOf(c_tf_cy.getText())-ymin;
 					if(c_rd_tc.isSelected()) {
-						int r = Integer.valueOf(c_tf_rx.getText())-ymin;
+						int r = Integer.valueOf(c_tf_rx.getText());
 						if(r < 0) {
 							msg = new Msgbox("半径小于0，输入数据非法！");
 							return;
@@ -562,8 +562,8 @@ class DrawCircle extends JPanel{
 						}
 					}
 					else if(c_rd_to.isSelected()) {
-						int rx = Integer.valueOf(c_tf_rx.getText())-ymin;
-						int ry = Integer.valueOf(c_tf_ry.getText())-ymin;
+						int rx = Integer.valueOf(c_tf_rx.getText());
+						int ry = Integer.valueOf(c_tf_ry.getText());
 						if(rx < 0) {
 							msg = new Msgbox("半径小于0，输入数据非法！");
 							return;
