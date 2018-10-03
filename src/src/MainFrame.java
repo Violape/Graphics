@@ -578,7 +578,40 @@ class DrawCircle extends JPanel{
 							}
 						}
 						else if(c_rd_br.isSelected()) {
-							; //圆的Bresham算法
+							int x = 0, y = r, d = 2 - 2 * r, limit = 0, cnt = 0;
+							int d1, d2, dr;
+							while(y >= limit) {
+								String text = "Order "+String.valueOf(cnt)+", d = "+String.valueOf(d);
+								c_pn_main.paint(cx+x, 24-cy-y, text);
+								c_pn_main.paint(cx+x, 24-cy+y, text);
+								c_pn_main.paint(cx-x, 24-cy-y, text);
+								c_pn_main.paint(cx-x, 24-cy+y, text);
+								if(d < 0) {
+									d1 = 2 * (d + y) - 1;
+									if(d1 <= 0) dr = 1;
+									else dr = 2;
+								}
+								else if(d > 0) {
+									d2 = 2 * (d - x) - 1;
+									if(d2 < 0) dr = 2;
+									else dr = 3;
+								}
+								else
+									dr = 2;
+								switch(dr) {
+								case 1: x++;
+										d += 2 * x + 1;
+										break;
+								case 2: x++;
+										y--;
+										d += 2 * (x - y + 1);
+										break;
+								case 3: y--;
+										d += 1 - 2 * y;
+										break;
+								}
+								cnt++;
+							}
 						}
 						else {
 							msg = new Msgbox("请选择绘制方法！");
