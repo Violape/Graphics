@@ -543,7 +543,7 @@ class DrawCircle extends JPanel{
 					int cy = Integer.valueOf(c_tf_cy.getText())-ymin;
 					if(c_rd_tc.isSelected()) {
 						int r = Integer.valueOf(c_tf_rx.getText());
-						if(r < 0) {
+						if(r <= 0) {
 							msg = new Msgbox("半径小于0，输入数据非法！");
 							return;
 						}
@@ -620,11 +620,11 @@ class DrawCircle extends JPanel{
 					else if(c_rd_to.isSelected()) {
 						int rx = Integer.valueOf(c_tf_rx.getText());
 						int ry = Integer.valueOf(c_tf_ry.getText());
-						if(rx < 0) {
+						if(rx <= 0) {
 							msg = new Msgbox("半径小于0，输入数据非法！");
 							return;
 						}
-						if(ry < 0) {
+						if(ry <= 0) {
 							msg = new Msgbox("半径小于0，输入数据非法！");
 							return;
 						}
@@ -632,7 +632,68 @@ class DrawCircle extends JPanel{
 							msg = new Msgbox("绘图超出边界，请重新绘制！");
 							return;
 						}
-						; //椭圆的中点画线算法
+						boolean flag = true;
+						if(rx < ry) {
+							int temp = rx;
+							rx = ry;
+							ry = temp;
+							flag = false;
+						}
+						int x = (int)(rx+0.5), y = 0, tx = x, cnt = 0;
+						int d1 = 2*ry*ry*x*(x-1) + ry*ry/2 + 2*rx*rx*(1-ry*ry);
+						while(2*ry*ry*tx > 2*rx*rx*y) {
+							String text = "Order "+ String.valueOf(cnt)+", d1 = "+String.valueOf(d1);
+							if(flag) {
+								c_pn_main.paint(cx+x, 24-cy-y, text);
+								c_pn_main.paint(cx+x, 24-cy+y, text);
+								c_pn_main.paint(cx-x, 24-cy-y, text);
+								c_pn_main.paint(cx-x, 24-cy+y, text);
+							}
+							else {
+								c_pn_main.paint(cx+y, 24-cy-x, text);
+								c_pn_main.paint(cx+y, 24-cy+x, text);
+								c_pn_main.paint(cx-y, 24-cy-x, text);
+								c_pn_main.paint(cx-y, 24-cy+x, text);
+							}
+							if(d1 < 0) {
+								y++;
+								d1 += 4*rx*rx*y + 2*rx*rx;
+								tx = x - 1;
+							}
+							else {
+								x--;
+								y++;
+								d1 -= 4*ry*ry*x - 4*rx*rx*y - 2*rx*rx;
+								tx = x;
+							}
+							cnt++;
+						}
+						int d2 = 2*ry*ry*(x*x+1) - 4*ry*ry*x + 2*rx*rx*(y*y+y-ry*ry) + rx*rx/2;
+						while(x >= 0) {
+							String text = "Order "+ String.valueOf(cnt)+", d2 = "+String.valueOf(d2);
+							if(flag) {
+								c_pn_main.paint(cx+x, 24-cy-y, text);
+								c_pn_main.paint(cx+x, 24-cy+y, text);
+								c_pn_main.paint(cx-x, 24-cy-y, text);
+								c_pn_main.paint(cx-x, 24-cy+y, text);
+							}
+							else {
+								c_pn_main.paint(cx+y, 24-cy-x, text);
+								c_pn_main.paint(cx+y, 24-cy+x, text);
+								c_pn_main.paint(cx-y, 24-cy-x, text);
+								c_pn_main.paint(cx-y, 24-cy+x, text);
+							}
+							if(d2 < 0) {
+								x--;
+								y++;
+								d2 += 4*rx*rx*y - 4*ry*ry*x + 2*ry*ry;
+							}
+							else {
+								x--;
+								d2 -= 4*ry*ry*x - 2*ry*ry;
+							}
+							cnt++;
+						}
 					}
 					else {
 						msg = new Msgbox("请选择绘制图形类型！");
