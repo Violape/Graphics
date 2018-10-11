@@ -71,8 +71,12 @@ class DrawCircle extends JPanel{
 		c_rd_br.setBounds(370,32,80,20);
 		c_pn_main.setBounds(40,60,540,540);
 		c_rd_tc.setSelected(true);
+		c_rd_mp.setSelected(true);
 		c_tf_ry.setText("");
 		c_tf_ry.setEnabled(false);
+		c_tf_cx.setText("12");
+		c_tf_cy.setText("12");
+		c_tf_rx.setText("8");
 		c_rd_tc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				c_rd_mp.setEnabled(true);
@@ -161,9 +165,9 @@ class DrawCircle extends JPanel{
 						}
 						else if(c_rd_br.isSelected()) {
 							int x = 0, y = r, d = 2 - 2 * r, limit = 0, cnt = 0;
-							int d1, d2, dr;
+							int d1 = 0, d2 = 0, dr;
 							while(y >= limit) {
-								String text = "Order "+String.valueOf(cnt)+", d = "+String.valueOf(d);
+								String text = "Order "+String.valueOf(cnt)+", d = "+String.valueOf(d)+", d1 = "+String.valueOf(d1)+", d2 = "+String.valueOf(d2);
 								c_pn_main.paint(cx+x, 24-cy-y, text);
 								c_pn_main.paint(cx+x, 24-cy+y, text);
 								c_pn_main.paint(cx-x, 24-cy-y, text);
