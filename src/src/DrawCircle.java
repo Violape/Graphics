@@ -70,6 +70,9 @@ class DrawCircle extends JPanel{
 		c_rd_mp.setBounds(370,10,80,20);
 		c_rd_br.setBounds(370,32,80,20);
 		c_pn_main.setBounds(40,60,540,540);
+		c_rd_tc.setSelected(true);
+		c_tf_ry.setText("");
+		c_tf_ry.setEnabled(false);
 		c_rd_tc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				c_rd_mp.setEnabled(true);
