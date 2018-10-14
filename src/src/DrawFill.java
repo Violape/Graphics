@@ -1,9 +1,7 @@
 package src;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import java.awt.event.*;
 import javax.swing.*;
 
 public class DrawFill extends JPanel {
@@ -12,8 +10,8 @@ public class DrawFill extends JPanel {
 	JRadioButton f_rd_fl, f_rd_sc;
 	ButtonGroup f_bg_mode;
 	JButton f_bt_st, f_bt_ln, f_bt_cl, f_bt_re, f_bt_draw;
-	int x0=0, x1=0, x2=0, y0=0, y1=0, y2=0;
 	DrawPanel f_pn_main;
+	int x0 = 0, x1 = 0, x2 = 0, y0 = 0, y1 = 0, y2 = 0;
 	public DrawFill() {
 		String lookAndFeel ="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 		try { UIManager.setLookAndFeel(lookAndFeel); }
@@ -181,5 +179,6 @@ public class DrawFill extends JPanel {
 				e1.printStackTrace();
 			}
 		}
+		// Insert operations of filling space here
 	}
 }
