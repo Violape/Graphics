@@ -80,58 +80,92 @@ public class BorderCut extends JPanel{
 	private class Draw implements ActionListener{
 		int x1, x2, y1, y2, xl, xr, yt, yb;
 		public void actionPerformed(ActionEvent e) {
-			for(int i=0; i<=24; i++)
-				for(int j=0; j<=24; j++) {
-					b_pn_main.d_lb_point[i][j].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointw.png"));
-					b_pn_main.d_lb_point[i][j].setToolTipText(null);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for(int i=0; i<=24; i++)
+						for(int j=0; j<=24; j++) {
+							b_pn_main.d_lb_point[i][j].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointw.png"));
+							b_pn_main.d_lb_point[i][j].setToolTipText(null);
+						}
+					x1 = Integer.valueOf(b_tf_lx1.getText());
+					x2 = Integer.valueOf(b_tf_lx2.getText());
+					y1 = Integer.valueOf(b_tf_ly1.getText());
+					y2 = Integer.valueOf(b_tf_ly2.getText());
+					xl = Integer.valueOf(b_tf_cx1.getText());
+					xr = Integer.valueOf(b_tf_cx2.getText());
+					yt = 24 - Integer.valueOf(b_tf_cy1.getText());
+					yb = 24 - Integer.valueOf(b_tf_cy2.getText());
+					Msgbox msg;
+					if(xl < 0 || xr > 24 || xl > xr) {
+						msg = new Msgbox("左右边界不合法！");
+						return;
+					}
+					else if(yb < 0 || yt > 24 || yt > yb) {
+						msg = new Msgbox("上下边界不合法！");
+						return;
+					}
+					int code1 = encode(x1, y1);
+					int code2 = encode(x2, y2);
+					int code = 0;
+					float x = 0, y = 0;
+					while(code1 != 0 || code2 != 0) {
+						if((code1 & code2) != 0)
+							return;
+						if(code1 != 0)
+							code = code1;
+						else
+							code = code2;
+						if((1 & code) != 0) {
+							x = xl;
+							y = y1 + (y2 - y1) * (xl - x1) / (float)(x2 - x1);
+						}
+						else if((2 & code) != 0) {
+							x = xr;
+							y = y1 + (y2 - y1) * (xr - x1) / (float)(x2 - x1);
+						}
+						else if((4 & code) != 0) {
+							y = yt;
+							x = x1 + (x2 - x1) * (yt - y1) / (float)(y2 - y1);
+						}
+						else if((8 & code) != 0) {
+							y = yb;
+							x = x1 + (x2 - x1) * (yb - y1) / (float)(y2 - y1);
+						}
+						if(code == code1) {
+							code1 = encode(x, y);
+							x1 = (int)(x + 0.5);
+							y1 = (int)(y + 0.5);
+							b_tf_lx1.setText(String.format("%.2f", x));
+							b_tf_ly1.setText(String.format("%.2f", y));
+						}
+						else {
+							code2 = encode(x, y);
+							x2 = (int)(x + 0.5);
+							y2 = (int)(y + 0.5);
+							b_tf_lx2.setText(String.format("%.2f", x));
+							b_tf_ly2.setText(String.format("%.2f", y));
+						}
+						try {
+							Thread.sleep(1000);
+						}
+						catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+					}
+					drawline(x1, y1, x2, y2);
+					try {
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					b_tf_lx1.setText(String.format("%d", x1));
+					b_tf_ly1.setText(String.format("%d", y1));
+					b_tf_lx2.setText(String.format("%d", x2));
+					b_tf_ly2.setText(String.format("%d", y2));
 				}
-			x1 = Integer.valueOf(b_tf_lx1.getText());
-			x2 = Integer.valueOf(b_tf_lx2.getText());
-			y1 = Integer.valueOf(b_tf_ly1.getText());
-			y2 = Integer.valueOf(b_tf_ly2.getText());
-			xl = Integer.valueOf(b_tf_cx1.getText());
-			xr = Integer.valueOf(b_tf_cx2.getText());
-			yt = 24 - Integer.valueOf(b_tf_cy1.getText());
-			yb = 24 - Integer.valueOf(b_tf_cy2.getText());
-			int code1 = encode(x1, y1);
-			int code2 = encode(x2, y2);
-			int code = 0;
-			float x = 0, y = 0;
-			while(code1 != 0 || code2 != 0) {
-				if((code1 & code2) != 0)
-					return;
-				if(code1 != 0)
-					code = code1;
-				else
-					code = code2;
-				if((1 & code) != 0) {
-					x = xl;
-					y = y1 + (y2 - y1) * (xl - x1) / (float)(x2 - x1);
-				}
-				else if((2 & code) != 0) {
-					x = xr;
-					y = y1 + (y2 - y1) * (xr - x1) / (float)(x2 - x1);
-				}
-				else if((4 & code) != 0) {
-					y = yt;
-					x = x1 + (x2 - x1) * (yt - y1) / (float)(y2 - y1);
-				}
-				else if((8 & code) != 0) {
-					y = yb;
-					x = x1 + (x2 - x1) * (yb - y1) / (float)(y2 - y1);
-				}
-				if(code == code1) {
-					code1 = encode(x, y);
-					x1 = (int)(x + 0.5);
-					y1 = (int)(y + 0.5);
-				}
-				else {
-					code2 = encode(x, y);
-					x2 = (int)(x + 0.5);
-					y2 = (int)(y + 0.5);
-				}
-			}
-			drawline(x1, y1, x2, y2);
+			}).start();
 		}
 		public void drawline(int x1, int y1, int x2, int y2) {
 			int xmin = Integer.valueOf(b_pn_main.l_cb_xmin.getText());

@@ -220,6 +220,8 @@ public class DrawFill extends JPanel {
 			}).start();
 		}
 		public void Floodfill4(int x, int y) {
+			if(x < 0 || x > 24 || y < 0 || y > 24)
+				return;
 			if(color[x][24 - y] == 0) {
 				f_pn_main.d_lb_point[x][24 - y].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointy.png"));
 				color[x][24 - y] = 2;
