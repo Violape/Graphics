@@ -81,33 +81,40 @@ public class DrawFill extends JPanel {
 		f_rd_fl.setSelected(false);
 		f_rd_sc.setEnabled(false);
 		f_bt_draw.setEnabled(false);
+		f_bt_cl.setEnabled(false);
 		f_bt_st.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				f_bt_ln.setVisible(true);
-				f_bt_st.setVisible(false);
 				x1 = Integer.valueOf(f_tf_px.getText());
 				y1 = Integer.valueOf(f_tf_py.getText());
-				drawline(x1,y1,x1,y1);
-				x0 = x1;
-				y0 = y1;
+				if(drawline(x1,y1,x1,y1) == 0) {
+					f_bt_ln.setVisible(true);
+					f_bt_st.setVisible(false);
+					f_bt_cl.setEnabled(true);
+					f_pn_main.l_cb_xmin.setEnabled(false);
+					f_pn_main.l_cb_ymin.setEnabled(false);
+					x0 = x1;
+					y0 = y1;
+				}
 			}
 		});
 		f_bt_ln.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				x2 = Integer.valueOf(f_tf_px.getText());
 				y2 = Integer.valueOf(f_tf_py.getText());
-				drawline(x1,y1,x2,y2);
-				x1 = x2;
-				y1 = y2;
+				if(drawline(x1,y1,x2,y2) == 0) {
+					x1 = x2;
+					y1 = y2;
+				}
 			}
 		});
 		f_bt_cl.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				f_bt_ln.setEnabled(false);
-				f_bt_re.setVisible(true);
-				f_bt_cl.setVisible(false);
-				f_bt_draw.setEnabled(true);
-				drawline(x1,y1,x0,y0);
+				if(drawline(x1,y1,x0,y0) == 0) {
+					f_bt_ln.setEnabled(false);
+					f_bt_re.setVisible(true);
+					f_bt_cl.setVisible(false);
+					f_bt_draw.setEnabled(true);
+				}
 			}
 		});
 		f_bt_re.addActionListener(new ActionListener() {
@@ -118,6 +125,8 @@ public class DrawFill extends JPanel {
 				f_bt_re.setVisible(false);
 				f_bt_ln.setVisible(false);
 				f_bt_st.setVisible(true);
+				f_pn_main.l_cb_xmin.setEnabled(true);
+				f_pn_main.l_cb_ymin.setEnabled(true);
 				clear();
 				x1 = 0;
 				x2 = 0;
@@ -130,7 +139,7 @@ public class DrawFill extends JPanel {
 		});
 		f_bt_draw.addActionListener(new Fill());
 	}
-	public void drawline(int x1, int y1, int x2, int y2) {
+	public int drawline(int x1, int y1, int x2, int y2) {
 		int xmin = Integer.valueOf(f_pn_main.l_cb_xmin.getText());
 		int ymin = Integer.valueOf(f_pn_main.l_cb_ymin.getText());
 		x1 -= xmin;
@@ -139,7 +148,7 @@ public class DrawFill extends JPanel {
 		y2 -= ymin;
 		if(x1>24 || x1<0 || x2>24 || x2<0 || y1>24 || y2<0 || y1>24 || y2<0) {
 			Msgbox msg = new Msgbox("绘图超出边界，请重新绘制！");
-			return;
+			return -1;
 		}
 		if(x1 > x2) {
 			int temp = x1;
@@ -155,14 +164,14 @@ public class DrawFill extends JPanel {
 					f_pn_main.paint(x1, 24-j, null);
 					color[x1][24 - j] = 1;
 				}
-				return;
+				return 0;
 			}
 			else {
 				for(int j = y2; j <= y1; j++) {
 					f_pn_main.paint(x1, 24-j, null);
 					color[x1][24 - j] = 1;
 				}
-				return;
+				return 0;
 			}
 		}
 		else {
@@ -193,6 +202,7 @@ public class DrawFill extends JPanel {
 				}
 			}
 		}
+		return 0;
 	}
 	public void clear() {
 		for(int i=0; i<=24; i++)
@@ -212,10 +222,30 @@ public class DrawFill extends JPanel {
 								f_pn_main.d_lb_point[i][j].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointw.png"));
 								color[i][j] = 0;
 							}
-					int seedx = Integer.valueOf(f_tf_sx.getText());
-					int seedy = Integer.valueOf(f_tf_sy.getText());
-					Floodfill4(seedx, seedy);
-					f_bt_draw.setText("重画");
+					if(f_rd_fl.isSelected()) {
+						if(f_tf_sx.getText().equals("")) {
+							Msgbox msg = new Msgbox("请输入种子点横坐标！");
+						}
+						if(f_tf_sy.getText().equals("")) {
+							Msgbox msg = new Msgbox("请输入种子点纵坐标！");
+						}
+						int xmin = Integer.valueOf(f_pn_main.l_cb_xmin.getText());
+						int ymin = Integer.valueOf(f_pn_main.l_cb_ymin.getText());
+						int seedx = Integer.valueOf(f_tf_sx.getText()) - xmin;
+						int seedy = Integer.valueOf(f_tf_sy.getText()) - ymin;
+						if(color[seedx][24-seedy] == 1) {
+							Msgbox msg = new Msgbox("种子点在边界上，请重新选择种子！");
+							return;
+						}
+						Floodfill4(seedx, seedy);
+						f_bt_draw.setText("重画");
+					}
+					else if(f_rd_sc.isSelected()) {
+						;
+					}
+					else {
+						Msgbox msg = new Msgbox("未选择绘图方法！");
+					}
 				}
 			}).start();
 		}
@@ -226,7 +256,7 @@ public class DrawFill extends JPanel {
 				f_pn_main.d_lb_point[x][24 - y].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointy.png"));
 				color[x][24 - y] = 2;
 				try {
-					Thread.sleep(200);
+					Thread.sleep(100);
 				}
 				catch (InterruptedException e1) {
 					e1.printStackTrace();

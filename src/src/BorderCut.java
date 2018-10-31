@@ -1,4 +1,5 @@
 package src;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.*;
 import javax.swing.*;
@@ -84,27 +85,28 @@ public class BorderCut extends JPanel{
 				@Override
 				public void run() {
 					for(int i=0; i<=24; i++)
-						for(int j=0; j<=24; j++) {
+						for(int j=0; j<=24; j++)
 							b_pn_main.d_lb_point[i][j].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointw.png"));
-							b_pn_main.d_lb_point[i][j].setToolTipText(null);
-						}
 					x1 = Integer.valueOf(b_tf_lx1.getText());
 					x2 = Integer.valueOf(b_tf_lx2.getText());
 					y1 = Integer.valueOf(b_tf_ly1.getText());
 					y2 = Integer.valueOf(b_tf_ly2.getText());
 					xl = Integer.valueOf(b_tf_cx1.getText());
 					xr = Integer.valueOf(b_tf_cx2.getText());
-					yt = 24 - Integer.valueOf(b_tf_cy1.getText());
-					yb = 24 - Integer.valueOf(b_tf_cy2.getText());
+					yt = Integer.valueOf(b_tf_cy1.getText());
+					yb = Integer.valueOf(b_tf_cy2.getText());
 					Msgbox msg;
 					if(xl < 0 || xr > 24 || xl > xr) {
 						msg = new Msgbox("左右边界不合法！");
 						return;
 					}
-					else if(yb < 0 || yt > 24 || yt > yb) {
+					else if(yb < 0 || yt > 24 || yt < yb) {
 						msg = new Msgbox("上下边界不合法！");
 						return;
 					}
+					for(int i=xl; i<=xr; i++)
+						for(int j=yb; j<=yt; j++)
+							b_pn_main.d_lb_point[i][24-j].setIcon(new ImageIcon("D:/Programming Workspace/Graphics/img/pointy.png"));
 					int code1 = encode(x1, y1);
 					int code2 = encode(x2, y2);
 					int code = 0;
@@ -125,12 +127,12 @@ public class BorderCut extends JPanel{
 							y = y1 + (y2 - y1) * (xr - x1) / (float)(x2 - x1);
 						}
 						else if((4 & code) != 0) {
-							y = yt;
-							x = x1 + (x2 - x1) * (yt - y1) / (float)(y2 - y1);
-						}
-						else if((8 & code) != 0) {
 							y = yb;
 							x = x1 + (x2 - x1) * (yb - y1) / (float)(y2 - y1);
+						}
+						else if((8 & code) != 0) {
+							y = yt;
+							x = x1 + (x2 - x1) * (yt - y1) / (float)(y2 - y1);
 						}
 						if(code == code1) {
 							code1 = encode(x, y);
@@ -138,6 +140,20 @@ public class BorderCut extends JPanel{
 							y1 = (int)(y + 0.5);
 							b_tf_lx1.setText(String.format("%.2f", x));
 							b_tf_ly1.setText(String.format("%.2f", y));
+							if(x1 == xl || x1 == xr) {
+								b_tf_lx1.setBackground(Color.RED);
+								b_tf_lx1.setForeground(Color.WHITE);
+							}
+							else {
+								b_tf_lx1.setBackground(Color.YELLOW);
+							}
+							if(y1 == yt || y1 == yb) {
+								b_tf_ly1.setBackground(Color.RED);
+								b_tf_ly1.setForeground(Color.WHITE);
+							}
+							else {
+								b_tf_ly1.setBackground(Color.YELLOW);
+							}
 						}
 						else {
 							code2 = encode(x, y);
@@ -145,6 +161,20 @@ public class BorderCut extends JPanel{
 							y2 = (int)(y + 0.5);
 							b_tf_lx2.setText(String.format("%.2f", x));
 							b_tf_ly2.setText(String.format("%.2f", y));
+							if(x2 == xl || x2 == xr) {
+								b_tf_lx2.setBackground(Color.RED);
+								b_tf_lx2.setForeground(Color.WHITE);
+							}
+							else {
+								b_tf_lx2.setBackground(Color.YELLOW);
+							}
+							if(y2 == yt || y2 == yb) {
+								b_tf_ly2.setBackground(Color.RED);
+								b_tf_ly2.setForeground(Color.WHITE);
+							}
+							else {
+								b_tf_ly2.setBackground(Color.YELLOW);
+							}
 						}
 						try {
 							Thread.sleep(1000);
@@ -152,6 +182,14 @@ public class BorderCut extends JPanel{
 						catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}
+						b_tf_lx1.setBackground(Color.WHITE);
+						b_tf_lx2.setBackground(Color.WHITE);
+						b_tf_ly1.setBackground(Color.WHITE);
+						b_tf_ly2.setBackground(Color.WHITE);
+						b_tf_lx1.setForeground(Color.BLACK);
+						b_tf_lx2.setForeground(Color.BLACK);
+						b_tf_ly1.setForeground(Color.BLACK);
+						b_tf_ly2.setForeground(Color.BLACK);
 					}
 					drawline(x1, y1, x2, y2);
 					try {
@@ -226,8 +264,8 @@ public class BorderCut extends JPanel{
 			int c = 0;
 			if(x < xl) c |= 1;
 			if(x > xr) c |= 2;
-			if(y < yt) c |= 4;
-			if(y > yb) c |= 8;
+			if(y < yb) c |= 4;
+			if(y > yt) c |= 8;
 			return c;
 		}
 	}
